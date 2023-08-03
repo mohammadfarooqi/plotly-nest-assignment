@@ -5,9 +5,19 @@
 type Product {
   id: String!
   name: String!
-  price: Int!
+  price: Float!
 }
 
 type Query {
+  getProduct(id: String!): Product!
   products: [Product!]!
+}
+
+type Mutation {
+  createProduct(createProductInput: CreateProductInput!): Product!
+}
+
+input CreateProductInput {
+  name: String!
+  price: Float!
 }

@@ -1,14 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { Product } from './product.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CreateProductInput } from './dto/create-product.input';
 
 @Injectable()
 export class ProductsService {
-  async findAll(): Promise<Product[]> {
-    const product = new Product();
-    product.id = '1';
-    product.name = 'Product 1';
-    product.price = 22;
+  constructor(
+    @InjectRepository(Product) private productsRepository: Repository<Product>,
+  ) {}
 
-    return [product];
+  createProduct(createProductInput: CreateProductInput): Promise<Product> {
+    const newProduct = this.productsRepository.create(createProductInput);
+    return this.productsRepository.save(newProduct);
+  }
+
+  async findAll(): Promise<Product[]> {
+    return this.productsRepository.find();
+  }
+
+  findOne(id: string): Promise<Product> {
+    return this.productsRepository.findOneOrFail({ where: { id } });
   }
 }
