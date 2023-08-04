@@ -3,21 +3,39 @@
 # ------------------------------------------------------
 
 type Product {
-  id: String!
+  id: ID!
   name: String!
   price: Float!
 }
 
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  age: Int!
+  orders: [Product!]
+}
+
 type Query {
-  getProduct(id: String!): Product!
-  products: [Product!]!
+  getProduct(id: ID!): Product!
+  getAllProducts: [Product!]!
+  getAllUsers: [User!]!
+  getUser(id: ID!): User!
 }
 
 type Mutation {
   createProduct(createProductInput: CreateProductInput!): Product!
+  createUser(createUserInput: CreateUserInput!): User!
 }
 
 input CreateProductInput {
   name: String!
   price: Float!
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  age: Int!
+  orders: [ID!]
 }
