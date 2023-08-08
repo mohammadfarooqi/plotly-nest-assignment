@@ -1,36 +1,20 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# GraphQL NestJS Project: User and Product Management
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project is a simple GraphQL API built using NestJS and TypeORM. It allows you to manage users and products, along with their relationships.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Getting Started
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+To get the project up and running on your local machine, follow these steps:
 
 ## Installation
 
 ```bash
 $ npm install
 ```
+
+## Database Setup
+
+The project uses an in-memory SQLite database by default. No additional database setup is required. Note that to make things easier to test, there are some Users and Products that get seeded upon starting of the server.
 
 ## Running the app
 
@@ -45,29 +29,154 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+The GraphQL playground will be accessible at http://localhost:3000/graphql.
+
 ## Test
 
 ```bash
 # unit tests
 $ npm run test
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# unit tests - watch mode
+$ npm run test:watch
 ```
 
-## Support
+## Sample Queries and Mutations
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Here are some sample GraphQL queries and mutations that you can use to interact with the API:
 
-## Stay in touch
+### Create a Product
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+mutation {
+  createProduct(
+    createProductInput: {
+      name: "Sample Product"
+      price: 9.99
+    }
+  ) {
+    id
+    name
+    price
+  }
+}
+```
 
-## License
+### Create a User with Orders:
 
-Nest is [MIT licensed](LICENSE).
+```bash
+mutation {
+  createUser(
+    createUserInput: {
+      name: "John Doe"
+      email: "john@example.com"
+      age: 28
+      orders: ["1", "3"]
+    }
+  ) {
+    id
+    name
+    email
+    age
+    orders {
+      id
+      name
+      price
+    }
+  }
+}
+```
+
+### Get All Users:
+
+```bash
+query {
+  getAllUsers {
+    id
+    name
+    email
+    age
+    orders {
+      id
+      name
+      price
+    }
+  }
+}
+```
+
+### Get User by Id:
+
+```bash
+query {
+  getUser(id: "1") {
+    id
+    name
+    email
+    age
+    orders {
+      id
+      name
+      price
+    }
+  }
+}
+```
+
+### Get Product by Id:
+
+```bash
+query {
+  getProduct(id: "1") {
+    id
+    name
+    price
+  }
+}
+```
+
+### Get All Products:
+
+```bash
+query {
+  getAllProducts {
+    id
+    name
+    price
+  }
+}
+```
+
+## Project Structure
+
+The project follows a modular architecture:
+
+```bash
+├── src
+│   ├── products
+│   │   ├── dto
+│   │   ├── entities
+│   │   ├── products.module.ts
+│   │   ├── products.resolver.ts
+│   │   └── products.service.ts
+│   ├── users
+│   │   ├── dto
+│   │   ├── entities
+│   │   ├── users.module.ts
+│   │   ├── users.resolver.ts
+│   │   └── users.service.ts
+│   ├── app.module.ts
+│   ├── main.ts
+│   └── schema.gql
+├── package.json
+├── package-lock.json
+├── tsconfig.json
+└── nest-cli.json
+```
+
+## Dependencies
+
+- NestJS
+- TypeORM
+- GraphQL
+- SQLite
