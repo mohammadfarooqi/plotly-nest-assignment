@@ -27,7 +27,6 @@ export class UsersService {
           .fill(null)
           .map(() => {
             const randomNumber = faker.number.int({ min: 0, max: 9 });
-            console.log('products', products[randomNumber])
             return products[randomNumber].id;
           }),
       }));
@@ -55,16 +54,26 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.usersRepository.find({
-      relations: ['orders'],
-    });
+    return this.usersRepository.find();
   }
 
   findOne(id: string): Promise<User> {
     return this.usersRepository.findOneOrFail({
       where: { id },
+    });
+  }
+
+  async findProductsForUser(userId: string): Promise<Product[]> {
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
       relations: ['orders'],
     });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return user.orders;
   }
 
   // update(id: string, updateUserInput: UpdateUserInput) {

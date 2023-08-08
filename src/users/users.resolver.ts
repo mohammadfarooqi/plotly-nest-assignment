@@ -1,7 +1,16 @@
-import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  ID,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
+import { Product } from '../products/entities/product.entity';
 // import { UpdateUserInput } from './dto/update-user.input';
 
 @Resolver((of) => User)
@@ -12,7 +21,7 @@ export class UsersResolver {
   createUser(
     @Args('createUserInput') createUserInput: CreateUserInput,
   ): Promise<User> {
-    console.log('createUserInput', createUserInput)
+    console.log('createUserInput', createUserInput);
     return this.usersService.createUser(createUserInput);
   }
 
@@ -24,6 +33,13 @@ export class UsersResolver {
   @Query((returns) => User, { name: 'getUser' })
   getUser(@Args('id', { type: () => ID }) id: string): Promise<User> {
     return this.usersService.findOne(id);
+  }
+
+  @ResolveField((returns) => [Product])
+  async orders(@Parent() user: User): Promise<Product[]> {
+    console.log('user new', user);
+    const { id } = user;
+    return this.usersService.findProductsForUser(id);
   }
 
   // @Mutation((returns) => User, { name: 'updateUser' })

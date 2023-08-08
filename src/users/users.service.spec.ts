@@ -48,7 +48,7 @@ describe('UsersService', () => {
         {
           provide: ProductsService,
           useValue: mockProductsService,
-        }
+        },
       ],
     }).compile();
 
